@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>بوابة الكابتن - أسود الطريق</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: system-ui, -apple-system, sans-serif; }
+    body {
+      background-color: #080a0f;
+      color: #ffffff;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      padding: 15px;
+      direction: rtl;
+    }
+    .app-card {
+      background-color: #0d1117;
+      border: 2px solid #ca8a04;
+      border-radius: 20px;
+      width: 100%;
+      max-width: 380px;
+      padding: 16px;
+      box-shadow: 0 0 20px rgba(202, 138, 4, 0.2);
+    }
+
+    /* الهيدر */
+    .header { text-align: center; margin-bottom: 12px; }
+    .header h1 { font-size: 20px; font-weight: 900; color: #eab308; display: flex; align-items: center; justify-content: center; gap: 6px; }
+    .header p { font-size: 11px; color: #9ca3af; margin-top: 2px; }
+    .badge-online { display: inline-block; background: rgba(16, 185, 129, 0.2); color: #10b981; border: 1px solid #10b981; border-radius: 12px; font-size: 10px; padding: 2px 10px; margin-top: 6px; font-weight: bold; }
+
+    .section-title { text-align: center; font-size: 14px; font-weight: bold; color: #eab308; margin: 12px 0 8px 0; }
+
+    /* حقول الاستعلام */
+    .input-box { width: 100%; padding: 10px; background: #161b22; border: 1px solid #30363d; border-radius: 8px; color: white; text-align: center; font-size: 13px; font-weight: bold; margin-bottom: 8px; outline: none; }
+    .btn-green { width: 100%; padding: 11px; background: #059669; color: white; border: none; border-radius: 8px; font-weight: bold; font-size: 13px; cursor: pointer; }
+    .btn-green:hover { background: #047857; }
+
+    /* نتيجة الحساب والاسم */
+    .account-card { background: #161b22; border: 1px solid #ca8a04; border-radius: 12px; padding: 14px; text-align: center; margin-top: 12px; }
+    .account-name { font-size: 16px; font-weight: bold; color: white; }
+    .account-phone { font-size: 11px; color: #9ca3af; margin-bottom: 6px; }
+    .balance-val { font-size: 28px; font-weight: 900; color: #10b981; margin: 4px 0; }
+
+    .status-banner { background: rgba(16, 185, 129, 0.15); border: 1px solid #10b981; color: #10b981; border-radius: 8px; padding: 6px; text-align: center; font-size: 11px; font-weight: bold; margin-top: 8px; }
+
+    /* شبكة الكروت الملونة */
+    .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 10px; }
+    .stat-box { border-radius: 10px; padding: 10px; text-align: center; }
+    .stat-box.green-bg { background: rgba(16, 185, 129, 0.1); border: 1px solid #10b981; color: #10b981; }
+    .stat-box.red-bg { background: rgba(244, 63, 94, 0.1); border: 1px solid #f43f5e; color: #f43f5e; }
+    .stat-box .title { font-size: 10px; font-weight: bold; margin-bottom: 4px; display: flex; align-items: center; justify-content: center; gap: 4px; }
+    .stat-box .val { font-size: 18px; font-weight: 900; }
+
+    /* أرضية الجروب والرصيد القديم */
+    .single-box { background: #161b22; border: 1px solid #ca8a04; border-radius: 10px; padding: 8px; text-align: center; margin-top: 8px; }
+    .single-box .lbl { font-size: 11px; color: #eab308; font-weight: bold; }
+    .single-box .sub { font-size: 9px; color: #6b7280; margin-bottom: 4px; }
+    .single-box .val { font-size: 15px; font-weight: bold; color: white; }
+
+    /* تفاصيل الجرد الكاملة */
+    .details-card { background: #161b22; border: 1px solid #ca8a04; border-radius: 12px; padding: 12px; margin-top: 12px; }
+    .details-card h4 { font-size: 12px; color: #eab308; margin-bottom: 8px; text-align: center; }
+    
+    .info-sub-box { background: #0d1117; border: 1px dashed #30363d; border-radius: 8px; padding: 8px; margin-bottom: 8px; }
+    .info-sub-box .header-line { font-size: 11px; color: #38bdf8; font-weight: bold; margin-bottom: 6px; }
+    .row-item { display: flex; justify-content: space-between; align-items: center; font-size: 11px; margin-bottom: 4px; }
+    .row-item .lbl { color: #9ca3af; }
+    .row-item .val { color: white; font-weight: bold; }
+
+    .btn-copy { background: #0284c7; color: white; border: none; padding: 2px 8px; border-radius: 4px; font-size: 10px; cursor: pointer; font-weight: bold; }
+
+    .btn-whatsapp { display: flex; justify-content: center; align-items: center; gap: 6px; width: 100%; padding: 10px; background: #10b981; color: white; border: none; border-radius: 8px; font-weight: bold; font-size: 12px; cursor: pointer; text-decoration: none; margin-top: 8px; }
+    
+    .btn-reset { width: 100%; padding: 9px; background: #374151; color: white; border: none; border-radius: 8px; font-weight: bold; font-size: 11px; cursor: pointer; margin-top: 10px; }
+  </style>
+</head>
+<body>
+
+  <div class="app-card">
+    
+    <!-- الهيدر -->
+    <div class="header">
+      <h1>🦁 أسود الطريق</h1>
+      <p>بوابة الكابتن - استعلام المستحقات</p>
+      <div class="badge-online">• النظام متصل وآمن</div>
+    </div>
+
+    <div class="section-title">استعلام عن مستحقاتك</div>
+
+    <!-- نموذج الاستعلام -->
+    <div id="queryForm">
+      <input type="text" id="phoneInput" class="input-box" placeholder="07xxxxxxx">
+      <input type="password" id="codeInput" class="input-box" placeholder="••••">
+      <button class="btn-green" onclick="handleQuery()">استعلام عن المستحقات</button>
+    </div>
+
+    <!-- كارت النتيجة التفاعلي -->
+    <div id="resultContainer" style="display: none;">
+      <div class="account-card">
+        <div class="account-name" id="capName">يزن قرباع</div>
+        <div class="account-phone" id="capPhone">0798927525</div>
+        <div class="balance-val" id="capBalance">+14.50 JD</div>
+        <div id="balanceLabel" style="font-size: 10px; color: #10b981; font-weight: bold;">عنداك رصيد</div>
+      </div>
+
+      <div class="status-banner" id="statusBanner">لا يوجد مبلغ مستحق حالياً.</div>
+
+      <!-- الإنتاج والاستهلاك الإجمالي -->
+      <div class="grid-2">
+        <div class="stat-box green-bg">
+          <div class="title">📈 مجموع الإنتاج</div>
+          <div class="val" id="totalProd">+0.00</div>
+        </div>
+        <div class="stat-box red-bg">
+          <div class="title">📉 مجموع الاستهلاك</div>
+          <div class="val" id="totalCons">-0.00</div>
+        </div>
+      </div>
+
+      <!-- إنتاج واستهلاك الركاب -->
+      <div class="grid-2">
+        <div class="stat-box green-bg">
+          <div class="title">🚖 إنتاج الركاب</div>
+          <div class="val" id="passProd">0</div>
+        </div>
+        <div class="stat-box red-bg">
+          <div class="title">🚖 استهلاك الركاب</div>
+          <div class="val" id="passCons">0</div>
+        </div>
+      </div>
+
+      <!-- إنتاج واستهلاك الأوردرات -->
+      <div class="grid-2">
+        <div class="stat-box green-bg">
+          <div class="title">📦 إنتاج الأوردرات</div>
+          <div class="val" id="ordProd">0</div>
+        </div>
+        <div class="stat-box red-bg">
+          <div class="title">📦 استهلاك الأوردرات</div>
+          <div class="val" id="ordCons">0</div>
+        </div>
+      </div>
+
+      <!-- أرضية الجروب -->
+      <div class="single-box">
+        <div class="lbl">🪙 أرضية الجروب</div>
+        <div class="val" style="color: #f59e0b;" id="groupFloor">0.00</div>
+      </div>
+
+      <!-- الرصيد القديم -->
+      <div class="single-box">
+        <div class="lbl">👵 الرصيد القديم</div>
+        <div class="sub">مرحل من الفترات السابقة - بعهدة الإدارة فقط</div>
+        <div class="val" id="oldBalance">+0.00</div>
+      </div>
+
+      <!-- مؤشر نشاط الحساب -->
+      <div class="single-box">
+        <div class="lbl">⚡ نشاط الحساب</div>
+        <div class="sub">مؤشر بصري لحجم حركة الركاب والأوردرات المسجلة.</div>
+        <div style="background:#374151; height:8px; border-radius:4px; overflow:hidden; margin: 4px 0;">
+          <div id="activityProgressBar" style="background:#eab308; width:0%; height:100%; transition: width 0.5s;"></div>
+        </div>
+        <div class="sub" style="color:white; font-weight:bold;" id="activityCount">0 حركة مسجلة على الحساب</div>
+      </div>
+
+      <!-- تفاصيل الجرد الكاملة -->
+      <div class="details-card">
+        <h4>📜 تفاصيل الجرد الكاملة</h4>
+
+        <!-- البنك -->
+        <div class="info-sub-box">
+          <div class="header-line">🏛️ البنك</div>
+          <div class="row-item"><span class="lbl">اسم البنك</span><span class="val" id="bankName">العربي</span></div>
+          <div class="row-item">
+            <span class="lbl">الاسم المستعار</span>
+            <div><button class="btn-copy" onclick="copyText(document.getElementById('bankAlias').innerText)">نسخ</button> <span class="val" id="bankAlias">YUYU28</span></div>
+          </div>
+          <div class="row-item"><span class="lbl">الاسم</span><span class="val" id="bankAccName">-</span></div>
+        </div>
+
+        <!-- المحفظة -->
+        <div class="info-sub-box">
+          <div class="header-line">📱 المحفظة</div>
+          <div class="row-item"><span class="lbl">نوع المحفظة</span><span class="val" id="walletType">دينارك</span></div>
+          <div class="row-item">
+            <span class="lbl">الرقم</span>
+            <div><button class="btn-copy" onclick="copyText(document.getElementById('walletNum').innerText)">نسخ</button> <span class="val" id="walletNum">-</span></div>
+          </div>
+          <div class="row-item"><span class="lbl">الاسم</span><span class="val" id="walletAccName">-</span></div>
+        </div>
+
+        <!-- زر إرسال رسالة للمحاسب -->
+        <a id="whatsappBtn" href="https://wa.me/962781990914" target="_blank" class="btn-whatsapp">
+          💬 إرسال رسالة إلى المحاسب (واتساب)
+        </a>
+      </div>
+
+      <button class="btn-reset" onclick="resetForm()">← استعلام من رقم آخر</button>
+    </div>
+
+  </div>
+
+  <script>
+    function copyText(text) {
+      if(!text || text === '-') return;
+      navigator.clipboard.writeText(text);
+      alert('تم نسخ النص: ' + text);
+    }
+
+    function resetForm() {
+      document.getElementById('resultContainer').style.display = 'none';
+      document.getElementById('queryForm').style.display = 'block';
+      document.getElementById('phoneInput').value = '';
+      document.getElementById('codeInput').value = '';
+    }
+
+    async function handleQuery() {
+      const phone = document.getElementById('phoneInput').value.trim();
+      const code = document.getElementById('codeInput').value.trim();
+
+      if (!phone) {
+        alert('يرجى إدخال رقم الهاتف');
+        return;
+      }
+
+      try {
+        // طلب تسجيل الدخول للاستعلام
+        const res = await fetch('/api/auth/captain/login', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ phone, code })
+        });
+
+        const data = await res.json();
+
+        // إخفاء النموذج وإظهار الشاشة التفاعلية للنتيجة
+        document.getElementById('queryForm').style.display = 'none';
+        document.getElementById('resultContainer').style.display = 'block';
+
+        let captainData = data.captain || { name: 'كابتن', phone: phone };
+
+        // تحديث البيانات الأساسية للشاشة
+        document.getElementById('capName').innerText = captainData.name || 'الكابتن';
+        document.getElementById('capPhone').innerText = captainData.phone || phone;
+        document.getElementById('bankAccName').innerText = captainData.name || 'الكابتن';
+        document.getElementById('walletAccName').innerText = captainData.name || 'الكابتن';
+        document.getElementById('walletNum').innerText = captainData.wallet_number || captainData.phone || phone;
+        if(captainData.bank_name) document.getElementById('bankName').innerText = captainData.bank_name;
+
+        // استدعاء بيانات لوحة التحكم/الحركات إن وجدت
+        const dashRes = await fetch('/api/captain/dashboard');
+        if (dashRes.ok) {
+          const dashData = await dashRes.json();
+          const summary = dashData.summary || {};
+          const net = Number(dashData.net || 0);
+
+          document.getElementById('capBalance').innerText = `${net >= 0 ? '+' : ''}${net.toFixed(2)} JD`;
+          document.getElementById('capBalance').style.color = net >= 0 ? '#10b981' : '#f43f5e';
+          document.getElementById('balanceLabel').innerText = net >= 0 ? 'عنداك رصيد' : 'عليكم رصيد';
+          document.getElementById('balanceLabel').style.color = net >= 0 ? '#10b981' : '#f43f5e';
+
+          document.getElementById('totalProd').innerText = `+${Number(summary.production || 0).toFixed(2)}`;
+          document.getElementById('totalCons').innerText = `-${Number(summary.costs || 0).toFixed(2)}`;
+
+          const ordersCount = (dashData.orders || []).length;
+          const ledgerCount = (dashData.ledger || []).length;
+          const totalActivity = ordersCount + ledgerCount;
+
+          document.getElementById('activityCount').innerText = `${totalActivity} حركة مسجلة على الحساب`;
+          document.getElementById('activityProgressBar').style.width = `${Math.min(100, totalActivity * 5)}%`;
+        }
+
+        // تخصيص رابط الواتساب برقم المحاسب 0781990914 مع رسالة تجهيزية بالاسم والرقم
+        const msg = encodeURIComponent(`مرحباً، أنا الكابتن ${captainData.name} (${captainData.phone}). أود الاستفسار عن مستحقاتي.`);
+        document.getElementById('whatsappBtn').href = `https://wa.me/962781990914?text=${msg}`;
+
+      } catch (e) {
+        console.error(e);
+      }
+    }
+  </script>
+</body>
+</html>

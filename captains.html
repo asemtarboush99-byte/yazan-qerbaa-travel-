@@ -1,0 +1,363 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>لوحة التحكم الإدارية - أسود الطريق</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: system-ui, -apple-system, sans-serif; }
+    body { background-color: #0b0f17; color: #e2e8f0; padding: 20px; min-height: 100vh; direction: rtl; }
+    
+    /* الهيدر العلوي وزر الخروج المستقل */
+    .top-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; background: #111827; padding: 16px 24px; border-radius: 12px; border: 1px solid #1f2937; }
+    .top-header h1 { font-size: 22px; font-weight: bold; color: #38bdf8; }
+    .btn-logout { background-color: #dc2626; color: white; border: none; padding: 10px 20px; border-radius: 8px; cursor: pointer; font-weight: bold; font-size: 14px; }
+    .btn-logout:hover { background-color: #b91c1c; }
+
+    /* شريط التبويبات للتنظيم */
+    .nav-tabs { display: flex; gap: 10px; margin-bottom: 20px; flex-wrap: wrap; }
+    .tab-btn { background: #111827; color: #9ca3af; border: 1px solid #1f2937; padding: 12px 20px; border-radius: 8px; cursor: pointer; font-weight: bold; font-size: 14px; transition: all 0.2s; }
+    .tab-btn:hover, .tab-btn.active { background: #0284c7; color: white; border-color: #38bdf8; }
+
+    /* أسطح الخانات (Tab Panels) */
+    .tab-panel { display: none; }
+    .tab-panel.active { display: block; }
+
+    /* شبكة الكروت والخانات */
+    .cards-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 16px; }
+    .card { background-color: #111827; border: 1px solid #1f2937; border-radius: 12px; padding: 20px; }
+    .card h3 { font-size: 16px; font-weight: bold; color: #ffffff; text-align: center; margin-bottom: 16px; }
+
+    .form-group { margin-bottom: 12px; text-align: right; }
+    .form-group label { display: block; font-size: 12px; color: #9ca3af; margin-bottom: 4px; }
+    .form-group input, .form-group select { width: 100%; padding: 10px; background: #1f2937; border: 1px solid #374151; border-radius: 6px; color: white; font-size: 13px; outline: none; text-align: center; }
+
+    .btn-blue { width: 100%; background-color: #0284c7; color: white; border: none; padding: 10px; border-radius: 6px; font-weight: bold; font-size: 13px; cursor: pointer; margin-top: 6px; }
+    .btn-blue:hover { background-color: #0369a1; }
+    .btn-yellow { width: 100%; background-color: #eab308; color: black; border: none; padding: 10px; border-radius: 6px; font-weight: bold; font-size: 13px; cursor: pointer; margin-top: 6px; }
+    .btn-yellow:hover { background-color: #ca8a04; }
+
+    .prices-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; margin-bottom: 10px; }
+    .prices-row div { background: #1f2937; padding: 8px; border-radius: 6px; font-size: 12px; font-weight: bold; text-align: center; color: #38bdf8; }
+
+    .sub-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+    .sub-title { font-size: 12px; color: #9ca3af; text-align: center; margin-bottom: 6px; }
+
+    .calc-summary { background: #0b0f17; border-radius: 8px; padding: 12px; margin-top: 10px; font-size: 13px; }
+    .calc-row { display: flex; justify-content: space-between; margin-bottom: 4px; }
+    .calc-row.green { color: #10b981; }
+    .calc-row.red { color: #f43f5e; }
+    .calc-row.bold { font-weight: bold; color: white; border-top: 1px solid #1f2937; padding-top: 6px; margin-top: 6px; }
+
+    /* الجدول */
+    .table-card { background-color: #111827; border: 1px solid #1f2937; border-radius: 12px; padding: 20px; margin-top: 20px; }
+    .table-card h3 { font-size: 16px; font-weight: bold; color: #ffffff; text-align: right; margin-bottom: 16px; }
+    table { width: 100%; border-collapse: collapse; text-align: center; font-size: 13px; }
+    th, td { border: 1px solid #1f2937; padding: 12px; }
+    th { background-color: #1f2937; color: #38bdf8; }
+
+    .btn-action { border: none; padding: 6px 12px; border-radius: 4px; cursor: pointer; font-size: 12px; font-weight: bold; margin: 0 2px; }
+    .btn-danger { background-color: #ef4444; color: white; }
+  </style>
+</head>
+<body>
+
+  <!-- الهيدر الرئيسي مع زر الخروج المستقل -->
+  <div class="top-header">
+    <h1>لوحة التحكم الإدارية (أسود الطريق)</h1>
+    <button class="btn-logout" onclick="logout()">تسجيل الخروج</button>
+  </div>
+
+  <!-- أزرار القوائم للترتيب والتنقل المنفصل -->
+  <div class="nav-tabs">
+    <button class="tab-btn active" onclick="openTab('tabAdd')">➕ إنشاء حساب جديد</button>
+    <button class="tab-btn" onclick="openTab('tabManage')">👥 إدارة الكاباتن والحذف</button>
+    <button class="tab-btn" onclick="openTab('tabUpdate')">📝 تحديث المستحقات والإنتاج</button>
+    <button class="tab-btn" onclick="openTab('tabSummary')">📊 المجموع الإجمالي</button>
+    <button class="tab-btn" onclick="openTab('tabPayment')">💳 بيانات الدفع للكابتن</button>
+  </div>
+
+  <!-- 1. خانة إنشاء حساب جديد -->
+  <div id="tabAdd" class="tab-panel active">
+    <div class="card" style="max-width: 500px; margin: 0 auto;">
+      <h3>إنشاء حساب جديد</h3>
+      <div class="form-group">
+        <label>اسم الكابتن</label>
+        <input type="text" id="newCapName" placeholder="أدخل الاسم">
+      </div>
+      <div class="form-group">
+        <label>رقم الهاتف</label>
+        <input type="text" id="newCapPhone" placeholder="07xxxxxxxx">
+      </div>
+      <button class="btn-blue" onclick="createCaptain()">إنشاء الحساب وتوليد الكود</button>
+    </div>
+  </div>
+
+  <!-- 2. خانة إدارة الكابتن والحذف والبحث -->
+  <div id="tabManage" class="tab-panel">
+    <div class="card" style="max-width: 600px; margin: 0 auto;">
+      <h3>إدارة الكابتن والحذف</h3>
+      <div class="form-group">
+        <label>ابحث برقم الهاتف</label>
+        <input type="text" id="searchPhone" placeholder="07xxxxxxxx">
+      </div>
+      <button class="btn-blue" onclick="searchCaptain()">بحث</button>
+      <div id="searchResult" style="margin-top: 12px;"></div>
+    </div>
+  </div>
+
+  <!-- 3. خانة تحديث المستحقات والإنتاج -->
+  <div id="tabUpdate" class="tab-panel">
+    <div class="card" style="max-width: 600px; margin: 0 auto;">
+      <h3>تحديث المستحقات والإنتاج</h3>
+      <div class="form-group">
+        <label>الكابتن (الهاتف/الكود)</label>
+        <select id="batchCaptainSelect"></select>
+      </div>
+      <div class="sub-title">الأسعار الثابتة</div>
+      <div class="prices-row">
+        <div>0.75</div>
+        <div>0.75</div>
+        <div>1.00</div>
+        <div>1.00</div>
+      </div>
+      <div class="sub-grid">
+        <div>
+          <div class="sub-title" style="color:#10b981;">الإنتاج</div>
+          <input type="number" id="passProd" placeholder="عدد الركاب" style="margin-bottom: 8px; width:100%; padding:8px; background:#1f2937; border:1px solid #374151; color:white; font-size:12px; border-radius:4px; text-align:center;">
+          <input type="number" id="ordProd" placeholder="عدد الأوردرات" style="width:100%; padding:8px; background:#1f2937; border:1px solid #374151; color:white; font-size:12px; border-radius:4px; text-align:center;">
+        </div>
+        <div>
+          <div class="sub-title" style="color:#f43f5e;">الاستهلاك</div>
+          <input type="number" id="floor" placeholder="أرضية" style="margin-bottom: 8px; width:100%; padding:8px; background:#1f2937; border:1px solid #374151; color:white; font-size:12px; border-radius:4px; text-align:center;">
+          <input type="number" id="passCons" placeholder="عدد الركاب" style="margin-bottom: 8px; width:100%; padding:8px; background:#1f2937; border:1px solid #374151; color:white; font-size:12px; border-radius:4px; text-align:center;">
+          <input type="number" id="ordCons" placeholder="عدد الأوردرات" style="width:100%; padding:8px; background:#1f2937; border:1px solid #374151; color:white; font-size:12px; border-radius:4px; text-align:center;">
+        </div>
+      </div>
+      <button class="btn-blue" style="margin-top: 14px;" onclick="submitBatch()">حفظ التحديث</button>
+    </div>
+  </div>
+
+  <!-- 4. خانة المجموع الإجمالي -->
+  <div id="tabSummary" class="tab-panel">
+    <div class="card" style="max-width: 500px; margin: 0 auto;">
+      <h3>عرض المجموع الإجمالي</h3>
+      <div class="form-group">
+        <label>رقم الهاتف / الكود</label>
+        <select id="summaryCaptainSelect"></select>
+      </div>
+      <button class="btn-yellow" onclick="loadCaptainSummary()">عرض الحساب</button>
+      <div id="summaryDisplay" class="calc-summary" style="display:none;">
+        <div class="calc-row green"><span>الإنتاج:</span><span id="sumProd">0.00</span></div>
+        <div class="calc-row red"><span>الاستهلاك:</span><span id="sumCons">0.00</span></div>
+        <div class="calc-row bold"><span>الصافي:</span><span id="sumNet">0.00</span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 5. خانة بيانات الدفع -->
+  <div id="tabPayment" class="tab-panel">
+    <div class="card" style="max-width: 500px; margin: 0 auto;">
+      <h3>بيانات الدفع للكابتن</h3>
+      <div class="form-group">
+        <label>المحفظة</label>
+        <input type="text" id="payWallet" placeholder="رقم المحفظة">
+      </div>
+      <div class="form-group">
+        <label>الحساب البنكي</label>
+        <input type="text" id="payIban" placeholder="IBAN">
+      </div>
+      <div class="form-group">
+        <label>واتساب المحاسب</label>
+        <input type="text" id="payWhatsapp" placeholder="9627xxxxxxxx">
+      </div>
+      <button class="btn-blue" onclick="savePaymentProfile()">حفظ بيانات الدفع</button>
+    </div>
+  </div>
+
+  <!-- جدول سجل العمليات السابقة -->
+  <div class="table-card">
+    <h3>سجل العمليات السابقة (التعديل والحذف)</h3>
+    <table>
+      <thead>
+        <tr>
+          <th>التاريخ</th>
+          <th>الكابتن</th>
+          <th>النوع</th>
+          <th>المبلغ</th>
+          <th>إجراء</th>
+        </tr>
+      </thead>
+      <tbody id="logsTableBody">
+        <tr><td colspan="5">لا توجد عمليات مسجلة حالياً</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <script>
+    let globalCaptains = [];
+
+    function openTab(tabId) {
+      document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+      document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+      document.getElementById(tabId).classList.add('active');
+      event.target.classList.add('active');
+    }
+
+    async function logout() {
+      await fetch('/api/auth/logout', { method: 'POST' });
+      window.location.href = '/login.html';
+    }
+
+    async function loadAllCaptains() {
+      try {
+        const res = await fetch('/api/admin/captains');
+        if(res.status === 401) return window.location.href = '/login.html';
+        const data = await res.json();
+        globalCaptains = data.captains || [];
+
+        const select1 = document.getElementById('batchCaptainSelect');
+        const select2 = document.getElementById('summaryCaptainSelect');
+
+        select1.innerHTML = '<option value="">اختر الكابتن</option>';
+        select2.innerHTML = '<option value="">اختر الكابتن</option>';
+
+        globalCaptains.forEach(c => {
+          select1.innerHTML += `<option value="${c.id}">${c.name} (${c.phone})</option>`;
+          select2.innerHTML += `<option value="${c.id}">${c.name} (${c.phone})</option>`;
+        });
+      } catch (err) {
+        console.error(err);
+      }
+    }
+
+    async function createCaptain() {
+      const name = document.getElementById('newCapName').value.trim();
+      const phone = document.getElementById('newCapPhone').value.trim();
+      if(!name || !phone) return alert('يرجى كتابة الاسم ورقم الهاتف');
+
+      const res = await fetch('/api/admin/captains', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ name, phone })
+      });
+      const data = await res.json();
+      if(res.ok) {
+        alert(`تم إنشاء الحساب بنجاح!\nكود الدخول الخاص بالكابتن: ${data.code}`);
+        document.getElementById('newCapName').value = '';
+        document.getElementById('newCapPhone').value = '';
+        loadAllCaptains();
+      } else {
+        alert(data.error || 'حدث خطأ في الإنشاء');
+      }
+    }
+
+    function searchCaptain() {
+      const phone = document.getElementById('searchPhone').value.trim();
+      const resultDiv = document.getElementById('searchResult');
+      const captain = globalCaptains.find(c => c.phone.includes(phone));
+
+      if(captain) {
+        resultDiv.innerHTML = `
+          <div style="background:#1f2937; padding:12px; border-radius:8px; font-size:13px; text-align:right;">
+            <b>الاسم:</b> ${captain.name}<br>
+            <b>رقم الهاتف:</b> ${captain.phone}<br>
+            <button class="btn-action btn-danger" style="margin-top:8px; width:100%;" onclick="deleteCaptain('${captain.id}')">حذف الكابتن</button>
+            <button class="btn-action" style="margin-top:6px; width:100%; background:#eab308; color:black;" onclick="resetCode('${captain.id}')">توليد كود جديد</button>
+          </div>`;
+      } else {
+        resultDiv.innerHTML = '<span style="color:#f43f5e; font-size:13px;">لم يتم العثور على الكابتن</span>';
+      }
+    }
+
+    async function deleteCaptain(id) {
+      if(!confirm('هل أنت متأكد من حذف هذا الكابتن؟')) return;
+      const res = await fetch(`/api/admin/captains/${id}/status`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ status: 'deleted' })
+      });
+      if(res.ok) {
+        alert('تم حذف الكابتن بنجاح');
+        document.getElementById('searchResult').innerHTML = '';
+        loadAllCaptains();
+      } else {
+        alert('فشل عملية الحذف');
+      }
+    }
+
+    async function resetCode(id) {
+      const res = await fetch(`/api/admin/captains/${id}/reset-code`, { method: 'POST' });
+      const data = await res.json();
+      if(res.ok) {
+        alert(`الكود الجديد للكابتن: ${data.code}`);
+      }
+    }
+
+    async function submitBatch() {
+      const captain_id = document.getElementById('batchCaptainSelect').value;
+      if(!captain_id) return alert('يرجى اختيار الكابتن أولاً');
+
+      const body = {
+        captain_id,
+        passenger_production: document.getElementById('passProd').value || 0,
+        order_production: document.getElementById('ordProd').value || 0,
+        group_floor_count: document.getElementById('floor').value || 0,
+        passenger_consumption: document.getElementById('passCons').value || 0,
+        order_consumption: document.getElementById('ordCons').value || 0
+      };
+
+      const res = await fetch('/api/admin/entries/batch', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(body)
+      });
+
+      if(res.ok) {
+        alert('تم حفظ التحديث بنجاح');
+        loadAllCaptains();
+      } else {
+        alert('حدث خطأ أثناء الحفظ');
+      }
+    }
+
+    async function loadCaptainSummary() {
+      const captain_id = document.getElementById('summaryCaptainSelect').value;
+      if(!captain_id) return alert('اختر كابتن لعرض حسابه');
+
+      const res = await fetch(`/api/admin/captains/${captain_id}`);
+      const data = await res.json();
+      if(res.ok && data.captain) {
+        document.getElementById('summaryDisplay').style.display = 'block';
+        const c = globalCaptains.find(x => x.id == captain_id) || {};
+        document.getElementById('sumProd').innerText = Number(c.production || 0).toFixed(2);
+        document.getElementById('sumCons').innerText = Number(c.consumption || 0).toFixed(2);
+        document.getElementById('sumNet').innerText = Number(c.balance || 0).toFixed(2);
+      }
+    }
+
+    async function savePaymentProfile() {
+      const captain_id = document.getElementById('summaryCaptainSelect').value || document.getElementById('batchCaptainSelect').value;
+      if(!captain_id) return alert('اختر كابتن من أحد القوائم ليتم حفظ بيانات الدفع له');
+
+      const body = {
+        wallet_number: document.getElementById('payWallet').value,
+        bank_account: document.getElementById('payIban').value,
+        accountant_whatsapp: document.getElementById('payWhatsapp').value
+      };
+
+      const res = await fetch(`/api/admin/captains/${captain_id}/payment-profile`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(body)
+      });
+
+      if(res.ok) {
+        alert('تم حفظ بيانات الدفع بنجاح');
+      }
+    }
+
+    loadAllCaptains();
+  </script>
+</body>
+</html>

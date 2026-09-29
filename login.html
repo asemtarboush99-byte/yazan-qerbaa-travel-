@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>تسجيل الدخول - أسياد الطريق</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: system-ui, -apple-system, sans-serif; }
+    body {
+      background: #0b0f17;
+      color: #f8fafc;
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 20px;
+      direction: rtl;
+    }
+    .login-card {
+      background: #111827;
+      border: 1px solid #1f2937;
+      border-radius: 16px;
+      width: 100%;
+      max-width: 400px;
+      padding: 30px;
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
+    }
+    .logo-title {
+      text-align: center;
+      font-size: 24px;
+      font-weight: bold;
+      color: #38bdf8;
+      margin-bottom: 25px;
+    }
+    .tabs {
+      display: flex;
+      background: #0b0f17;
+      border-radius: 8px;
+      padding: 4px;
+      margin-bottom: 20px;
+      border: 1px solid #1f2937;
+    }
+    .tab-btn {
+      flex: 1;
+      padding: 10px;
+      border: none;
+      background: transparent;
+      color: #94a3b8;
+      font-weight: bold;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .tab-btn.active {
+      background: #0284c7;
+      color: white;
+    }
+    .form-group {
+      margin-bottom: 15px;
+      text-align: right;
+    }
+    label {
+      display: block;
+      font-size: 13px;
+      color: #94a3b8;
+      margin-bottom: 6px;
+    }
+    input {
+      width: 100%;
+      padding: 12px;
+      background: #1f2937;
+      border: 1px solid #374151;
+      border-radius: 8px;
+      color: white;
+      font-size: 15px;
+      text-align: center;
+      outline: none;
+    }
+    input:focus {
+      border-color: #38bdf8;
+    }
+    .btn {
+      width: 100%;
+      padding: 12px;
+      border: none;
+      border-radius: 8px;
+      font-weight: bold;
+      font-size: 15px;
+      cursor: pointer;
+      background: #eab308;
+      color: #000;
+      margin-top: 10px;
+      transition: background 0.2s;
+    }
+    .btn:hover {
+      background: #ca8a04;
+    }
+    .error-msg {
+      background-color: #7f1d1d;
+      color: #fca5a5;
+      padding: 10px;
+      border-radius: 6px;
+      font-size: 13px;
+      text-align: center;
+      margin-top: 15px;
+      display: none;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="login-card">
+    <div class="logo-title">أسياد الطريق</div>
+
+    <!-- التبويب بين الكابتن والآدمن -->
+    <div class="tabs">
+      <button class="tab-btn active" onclick="switchTab('captain')">دخول كابتن</button>
+      <button class="tab-btn" onclick="switchTab('admin')">دخول الآدمن</button>
+    </div>
+
+    <!-- نموذج دخول الكابتن (يحتاج رقم الهاتف + كود الدخول) -->
+    <form id="captainForm" onsubmit="handleCaptainLogin(event)">
+      <div class="form-group">
+        <label>رقم الهاتف</label>
+        <input type="text" id="captainPhone" placeholder="07xxxxxxxx" required>
+      </div>
+      <div class="form-group">
+        <label>كود الدخول (الرمز)</label>
+        <input type="password" id="captainCode" placeholder="أدخل كود الدخول" required>
+      </div>
+      <button type="submit" class="btn">تسجيل الدخول</button>
+    </form>
+
+    <!-- نموذج دخول الآدمن -->
+    <form id="adminForm" onsubmit="handleAdminLogin(event)" style="display: none;">
+      <div class="form-group">
+        <label>كلمة مرور الآدمن</label>
+        <input type="password" id="adminPass" placeholder="أدخل كلمة المرور" required>
+      </div>
+      <button type="submit" class="btn" style="background:#0284c7; color:white;">دخول اللوحة</button>
+    </form>
+
+    <div id="errorMsg" class="error-msg"></div>
+  </div>
+
+  <script>
+    function switchTab(type) {
+      const tabs = document.querySelectorAll('.tab-btn');
+      const captainForm = document.getElementById('captainForm');
+      const adminForm = document.getElementById('adminForm');
+      const errorMsg = document.getElementById('errorMsg');
+      errorMsg.style.display = 'none';
+
+      if (type === 'captain') {
+        tabs[0].classList.add('active');
+        tabs[1].classList.remove('active');
+        captainForm.style.display = 'block';
+        adminForm.style.display = 'none';
+      } else {
+        tabs[1].classList.add('active');
+        tabs[0].classList.remove('active');
+        adminForm.style.display = 'block';
+        captainForm.style.display = 'none';
+      }
+    }
+
+    async function handleCaptainLogin(e) {
+      e.preventDefault();
+      const phone = document.getElementById('captainPhone').value.trim();
+      const code = document.getElementById('captainCode').value.trim();
+      const errorMsg = document.getElementById('errorMsg');
+      errorMsg.style.display = 'none';
+
+      try {
+        // المطابقة الصريحة مع السيرفر الحقيقي
+        const res = await fetch('/api/auth/captain/login', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ phone, code })
+        });
+        const data = await res.json();
+
+        if (res.ok && data.ok) {
+          window.location.href = '/captain/dashboard.html';
+        } else {
+          errorMsg.innerText = data.error || 'رقم الهاتف أو الكود غير صحيح';
+          errorMsg.style.display = 'block';
+        }
+      } catch (err) {
+        errorMsg.innerText = 'حدث خطأ في الاتصال بالخادم';
+        errorMsg.style.display = 'block';
+      }
+    }
+
+    async function handleAdminLogin(e) {
+      e.preventDefault();
+      const password = document.getElementById('adminPass').value.trim();
+      const errorMsg = document.getElementById('errorMsg');
+      errorMsg.style.display = 'none';
+
+      try {
+        const res = await fetch('/api/auth/admin/login', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ password })
+        });
+        const data = await res.json();
+
+        if (res.ok && data.ok) {
+          window.location.href = '/admin/captains.html';
+        } else {
+          errorMsg.innerText = data.error || 'كلمة السر غير صحيحة';
+          errorMsg.style.display = 'block';
+        }
+      } catch (err) {
+        errorMsg.innerText = 'حدث خطأ في الاتصال بالخادم';
+        errorMsg.style.display = 'block';
+      }
+    }
+  </script>
+</body>
+</html>
