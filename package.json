@@ -5,7 +5,7 @@
   "description": "أسود الطريق - نظام إدارة الكباتن والطلبات والحسابات والعمولات",
   "main": "src/server.js",
   "scripts": {
-    "start": "node src/server.js"
+    "start": "node src/server.js || node server.js"
   },
   "engines": {
     "node": ">=20"
