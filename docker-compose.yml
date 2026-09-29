@@ -1,0 +1,28 @@
+services:
+  db:
+    image: postgres:16-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: aswad
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    ports:
+      - "5432:5432"
+    volumes:
+      - aswad_pg:/var/lib/postgresql/data
+  app:
+    build: .
+    restart: unless-stopped
+    depends_on:
+      - db
+    environment:
+      PORT: 3000
+      DATABASE_URL: postgresql://postgres:postgres@db:5432/aswad
+      DATABASE_SSL: "false"
+      ADMIN_PASSWORD: change-this-now
+      SESSION_SECRET: change-this-long-random-secret
+      NODE_ENV: production
+    ports:
+      - "3000:3000"
+volumes:
+  aswad_pg:
